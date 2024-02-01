@@ -1,10 +1,26 @@
 version: '3'
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  api:
+    build: ./api
+    ports: 
+      - "8080:8000"
+    volumes:
+      - ./api:/go/src/app
+    networks:
+      - mysql-link
+
+  mysqlsrv:
+    image: mysql:5.7
     ports:
-      - "8080:8080"
-    # environment:
-    #   GIN_MODE: release
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - mysql-link
+      
+networks:
+  mysql-link:
+    driver: bridge
